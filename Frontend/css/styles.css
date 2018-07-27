@@ -1,0 +1,57 @@
+html, body { height:100%; } 
+
+body {
+    background-color: lightblue;
+}
+
+h1 {
+    color: navy;
+    margin-left: 20px;
+}
+
+div {
+  position: relative;
+  display: inline;
+}
+
+
+.a1 {
+  position: absolute;
+  bottom: 345;
+  right: 410;
+}
+.a2 {
+  position: absolute;
+  bottom: 270;
+  right: 410;
+}
+.a3 {
+  position: absolute;
+  bottom: 190;
+  right: 410;
+}
+.a4 {
+  position: absolute;
+  bottom: 115;
+  right: 410;
+}
+.b1 {
+  position: absolute;
+  bottom: 345;
+  right: 50;
+}
+.b2 {
+  position: absolute;
+  bottom: 270;
+  right: 50;
+}
+.b3 {
+  position: absolute;
+  bottom: 190;
+  right: 50;
+}
+.b4 {
+  position: absolute;
+  bottom: 110;
+  right: 50;
+}
