@@ -1,0 +1,107 @@
+<html>
+<head>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
+
+<script type="text/javascript">
+AWS.config.update({
+  region: "us-west-2",
+  // The endpoint should point to the local or remote computer where DynamoDB (downloadable) is running.
+  // endpoint: 'http://localhost:8000',
+  /*
+    accessKeyId and secretAccessKey defaults can be used while using the downloadable version of DynamoDB. 
+    For security reasons, do not store AWS Credentials in your files. Use Amazon Cognito instead.
+  */
+  // accessKeyId: "fakeMyKeyId",
+  // secretAccessKey: "fakeSecretAccessKey"
+});
+
+  /* 
+     Uncomment the following code to configure Amazon Cognito and make sure to 
+     remove the endpoint, accessKeyId and secretAccessKey specified in the code above. 
+     Make sure Cognito is available in the DynamoDB web service region (specified above).
+     Finally, modify the IdentityPoolId and the RoleArn with your own.
+  */
+
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+IdentityPoolId: "us-west-2:1df20b78-088d-460e-9e0e-4d6f83b26ef2",
+RoleArn: "arn:aws:iam::831988033105:role/Cognito_ParkingProjectAppAccessUnauth_Role"
+});
+
+
+var dynamodb = new AWS.DynamoDB();
+var docClient = new AWS.DynamoDB.DocumentClient();
+
+function scanData() {
+    document.getElementById('textarea').innerHTML = "";
+    document.getElementById('textarea').innerHTML += "Scanning sensor table." + "\n";
+
+    var params = {
+        TableName: "IoTData",
+        ProjectionExpression: "dev_id, occupied"
+    };
+
+    docClient.scan(params, onScan);
+
+    function onScan(err, data) {
+        if (err) {
+            document.getElementById('textarea').innerHTML += "Unable to scan the table: " + "\n" + JSON.stringify(err, undefined, 2);
+        } else {
+            // Print all the movies
+            document.getElementById('textarea').innerHTML += "Scan succeeded: " + "\n";
+            data.Items.forEach(function(sensor) {
+                document.getElementById('textarea').innerHTML += sensor.dev_id + ": " + sensor.occupied + "\n";
+				var idnum = parseInt(sensor.dev_id);
+				var image=document.getElementById(idnum);
+				
+				if(sensor.occupied){
+					image.src = "https://s3.amazonaws.com/parkingprojecthost/images/statusClosed.png";
+				}else{
+					image.src = "https://s3.amazonaws.com/parkingprojecthost/images/statusOpen.png";
+				}
+				
+            });
+/*
+            // Continue scanning if we have more movies (per scan 1MB limitation)
+			setdocument.getElementById('textarea').innerHTML += "Scanning for more..." + "\n";
+			params.ExclusiveStartKey = data.LastEvaluatedKey;
+			docClient.scan(params, onScan); 
+*/
+        }
+    }
+}
+</script>
+
+<link rel="stylesheet" type="text/css" href="./css/styles.css">
+</head>
+
+<body>
+<table border = 1>
+    <td>
+        <table border = 1>
+            <caption>Scan</caption>
+            <td><input id="scanData" type="button" value="Scan" onclick="scanData();" /></td>
+        </table>
+    </td>
+</table>
+
+<br>
+<textarea readonly id= "textarea" style="width:400px; height:400px"></textarea>
+
+<br>
+<div>
+	<img src="https://s3.amazonaws.com/parkingprojecthost/images/LotTemplate.jpg" />
+	<img id="1" src="https://s3.amazonaws.com/parkingprojecthost/images/statusOpen.png" class="a1" />
+	<img id="2" src="https://s3.amazonaws.com/parkingprojecthost/images/statusOpen.png" class="a2" />
+	<img id="3" src="https://s3.amazonaws.com/parkingprojecthost/images/statusOpen.png" class="a3" />
+	<img id="4" src="https://s3.amazonaws.com/parkingprojecthost/images/statusOpen.png" class="a4" />
+	<img id="5" src="https://s3.amazonaws.com/parkingprojecthost/images/statusOpen.png" class="b1" />
+	<img id="6" src="https://s3.amazonaws.com/parkingprojecthost/images/statusOpen.png" class="b2" />
+	<img id="7" src="https://s3.amazonaws.com/parkingprojecthost/images/statusOpen.png" class="b3" />
+	<img id="8" src="https://s3.amazonaws.com/parkingprojecthost/images/statusOpen.png" class="b4" />
+</div>
+
+<script>
+    document.getElementById('fileinput').addEventListener('change', processFile, false);
+</script>
+</body>
+</html>
