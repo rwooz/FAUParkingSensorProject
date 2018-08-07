@@ -69,23 +69,20 @@ function scanData() {
         }
     }
 }
+
+function AutoRefresh( t ) {
+	setTimeout("location.reload(true);", t);
+}
 </script>
 
 <link rel="stylesheet" type="text/css" href="./css/styles.css">
 </head>
 
-<body>
-<table border = 1>
-    <td>
-        <table border = 1>
-            <caption>Scan</caption>
-            <td><input id="scanData" type="button" value="Scan" onclick="scanData();" /></td>
-        </table>
-    </td>
-</table>
+<body onLoad="scanData(); AutoRefresh(10000)">
+
 
 <br>
-<textarea readonly id= "textarea" style="width:400px; height:400px"></textarea>
+<textarea readonly id= "textarea" style="width:400px; height:200px"></textarea>
 
 <br>
 <div>
